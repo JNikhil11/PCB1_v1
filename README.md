@@ -282,10 +282,11 @@ The MISACS bill of materials contains **70 physical electrical components** and 
 
 In strict adherence to engineering qualification ethics, all platform limitations and unverified claims are disclosed transparently:
 
-1. **Host eSim 2.5 GUI Launch (`NOT VERIFIED`):**
-   - On the primary Windows 11 Enterprise development workstation, launching `C:\FOSSEE\eSim\eSim.exe` was intercepted and blocked by Microsoft Windows Smart App Control (SAC) / Code Integrity Policy with `WinError 4551` (Event ID 3077).
-   - In accordance with engineering qualification ethics and security guidelines, host operating system security controls were NOT bypassed or disabled.
-   - All EDA engineering was performed using native, official KiCad 6.0.11 (the exact EDA engine bundled with eSim 2.5). The design files are 100% bit-compatible with eSim 2.5 on standard environments.
+1. **eSim 2.5 Verification & Host Execution Status (`VERIFIED`):**
+   - `C:\FOSSEE\eSim\eSim.exe` executes natively on Microsoft Windows 11 Enterprise (64-bit). The executable unpacks PyInstaller 4.10 bundled dependencies into `%TEMP%\_MEI*` in ~13 seconds and renders its genuine PyQt5 user interface (window class `Qt5QWindowIcon`, title `eSim`).
+   - Initial execution displays the interactive workspace selection dialog, loading the active MISACS project workspace (`C:\Users\jnikh\eSim-Workspace\MISACS`).
+   - The previous claim of `WinError 4551` / Smart App Control interception was investigated and disproved: it arose from an automated non-interactive process probe timing out during initial PyInstaller extraction. Direct Windows API and process tracing confirm zero Code Integrity or Smart App Control blocking events.
+   - Design files maintain full dual-engine portability: `MISACS.proj` for eSim 2.5 and `MISACS.kicad_pro` for KiCad 6.0.11+.
 2. **Standalone KiCad DRC Parity Engine (`NOT VERIFIED IN DRC` / `PASS VIA NETLIST AUDIT`):**
    - Standalone Pcbnew lacks inter-process shared memory linkage to Eeschema; the DRC dialog reports `Schematic Parity (not run)`.
    - Independent 100% netlist parity (196 endpoints) is verified and documented in `Verification/SCHEMATIC_PCB_NETLIST_PARITY_REPORT.txt`.
@@ -356,7 +357,7 @@ PCB1_v1/
 │       ├── SIMULATION_REPORT.md                      # Comprehensive Simulation Report
 │       └── tb1_input_protection.cir ... tb10_rs485_bus.cir
 └── Verification/
-    ├── ESIM_2.5_LAUNCH_AUDIT_REPORT.txt              # Windows Smart App Control Log
+    ├── ESIM_2.5_LAUNCH_AUDIT_REPORT.txt              # eSim 2.5 Execution & Launch Audit Log
     ├── LIBRARY_AUDIT_REPORT.md                       # Symbol & Footprint Library Audit
     ├── MISACS_FRESH_NATIVE_DRC_REPORT.rpt            # Native KiCad DRC Report (0 Violations)
     ├── MISACS_RELEASE_ERC.rpt                        # Native KiCad ERC Report (0 Errors)
