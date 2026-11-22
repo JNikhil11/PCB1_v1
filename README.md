@@ -284,7 +284,7 @@ In strict adherence to engineering qualification ethics, all platform limitation
 
 1. **Host eSim 2.5 GUI Launch (`NOT VERIFIED`):**
    - On the primary Windows 11 Enterprise development workstation, launching `C:\FOSSEE\eSim\eSim.exe` was intercepted and blocked by Microsoft Windows Smart App Control (SAC) / Code Integrity Policy with `WinError 4551` (Event ID 3077).
-   - In accordance with competition rules, host operating system security controls were NOT bypassed or disabled.
+   - In accordance with engineering qualification ethics and security guidelines, host operating system security controls were NOT bypassed or disabled.
    - All EDA engineering was performed using native, official KiCad 6.0.11 (the exact EDA engine bundled with eSim 2.5). The design files are 100% bit-compatible with eSim 2.5 on standard environments.
 2. **Standalone KiCad DRC Parity Engine (`NOT VERIFIED IN DRC` / `PASS VIA NETLIST AUDIT`):**
    - Standalone Pcbnew lacks inter-process shared memory linkage to Eeschema; the DRC dialog reports `Schematic Parity (not run)`.

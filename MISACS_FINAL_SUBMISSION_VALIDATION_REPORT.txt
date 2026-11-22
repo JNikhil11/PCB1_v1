@@ -101,8 +101,8 @@ Design Proposal & Architecture:
    - Status: NOT VERIFIED
    - Reason: Python front-end executable (C:\FOSSEE\eSim\eSim.exe) was intercepted
      and blocked by Microsoft Windows Smart App Control (SAC) / Code Integrity Policy 
-     (WinError 4551, Event ID 3077). Per strict competition rules, host security 
-     settings were NOT bypassed.
+     (WinError 4551, Event ID 3077). In accordance with engineering qualification ethics 
+     and workstation security policy, host security settings were NOT bypassed.
    - Evaluator Guidance: Evaluators on standard Windows 10/11 or Linux systems can open 
      eSim_Project/MISACS.proj directly in eSim 2.5. Evaluators on enterprise hosts with 
      SAC enabled can open eSim_Project/MISACS.kicad_pro directly in KiCad 6.0.11 to inspect 
