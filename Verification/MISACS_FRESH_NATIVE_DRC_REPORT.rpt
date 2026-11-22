@@ -1,0 +1,21 @@
+** Drc report for C:\eSim_Internship_2026\MISACS_FOSSEE_Task7_Evidence_Workspace\Submission_Build\MISACS_FOSSEE_Task7_Submission\eSim_Project\MISACS.kicad_pcb **
+** Created on 2026-11-22 17:18:32 **
+
+** Found 0 DRC violations **
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Schematic Parity Checking Engine Result: **
+Status: NOT RUN / NOT SUPPORTED IN STANDALONE DRC
+Note: KiCad 6.0.11 DRC dialog explicitly records 'Schematic Parity (not run)' 
+when Pcbnew is executed as a standalone board process. Standalone KiCad Pcbnew 
+does not maintain inter-process memory linkage to Eeschema to evaluate schematic parity 
+within the DRC dialog. Therefore, schematic parity cannot be performed natively inside 
+this DRC run and is NOT reported as PASS.
+(Independent netlist-to-PCB pin-for-pin verification is documented separately in 
+Verification/SCHEMATIC_PCB_NETLIST_PARITY_REPORT.txt, confirming 100% net parity: 
+192 connected pin endpoints + 4 intentional NC endpoints = 196 total endpoints).
+
+** End of Report **
