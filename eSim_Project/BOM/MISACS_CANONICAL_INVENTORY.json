@@ -1,8 +1,41 @@
 {
-  "project": "MISACS",
-  "total_electrical_components": 70,
-  "total_mechanical_mounting_holes": 4,
-  "total_hardware_elements": 74,
+  "project": "Modular Industrial Sensor Acquisition and Control System (MISACS)",
+  "program": "FOSSEE eSim Winter Internship 2026 \u2014 Screening Task 7: PCB Design using eSim",
+  "author": "Nikhil J (JNikhil11)",
+  "date": "2026-11-22",
+  "hardware_baseline": {
+    "schematic_file": "eSim_Project/MISACS.kicad_sch",
+    "schematic_bytes": 134618,
+    "schematic_sha256": "6DE222A83B9F2B13141575CEB4C2BE5E1923FCCB374766BCFE82D35701CE10B8",
+    "pcb_file": "eSim_Project/MISACS.kicad_pcb",
+    "pcb_bytes": 385602,
+    "pcb_sha256": "136E71039AF185293E34E51087B60F242863BE97F9A93EC3C97C44F1EA3E88A4"
+  },
+  "inventory_summary": {
+    "total_electrical_components": 70,
+    "total_mechanical_mounting_holes": 4,
+    "total_physical_footprints_on_pcb": 74,
+    "total_schematic_symbol_instances": 74,
+    "total_unique_bom_line_items": 50,
+    "category_breakdown_electrical": {
+      "C_capacitors": 15,
+      "R_resistors": 19,
+      "D_diodes": 13,
+      "J_connectors": 6,
+      "JP_jumpers": 1,
+      "L_inductors": 1,
+      "Q_power_mosfets": 2,
+      "F_fuses": 3,
+      "SW_pushbuttons": 2,
+      "U_ics_and_modules": 8
+    },
+    "category_breakdown_mechanical": {
+      "H_mounting_holes": 4
+    },
+    "category_breakdown_schematic_virtual": {
+      "FLG_power_flags": 4
+    }
+  },
   "components": [
     {
       "reference": "C1",

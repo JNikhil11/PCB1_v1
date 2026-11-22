@@ -254,6 +254,26 @@ The MISACS bill of materials contains **70 physical electrical components** and 
 | **Interconnect & Switches** | 9 | Phoenix Contact 5.08mm screw terminals (J1, J2, J3, J5, J6); 3-pin terminal (J4); 2.54mm jumper header (JP1); C&K PTS645 tactile push switches (SW1, SW2) |
 | **Mechanical** | 4 | 3.2 mm plated M3 chassis mounting holes (H1-H4) |
 
+### Component Breakdown by Reference Prefix
+
+| Prefix | Category | Qty | Reference Designators |
+| :---: | :--- | :---: | :--- |
+| `C` | Capacitors | 15 | C1–C15 |
+| `R` | Resistors | 19 | R1–R19 |
+| `D` | Diodes & LEDs | 13 | D1–D12, D14 *(D13 intentionally skipped in schematic)* |
+| `J` | Screw Terminals | 6 | J1–J6 |
+| `JP` | Bus Termination Jumper | 1 | JP1 |
+| `L` | Power Inductor | 1 | L1 |
+| `Q` | Power MOSFETs | 2 | Q1, Q2 |
+| `F` | Fuses (1 PTC + 2 Fast) | 3 | F1 (PTC), F2 (Fast), F3 (Fast) |
+| `SW` | Tactile Switches | 2 | SW1 (RESET), SW2 (BOOT) |
+| `U` | ICs & Active Modules | 8 | U1 (Buck), U2 (LDO), U3 (Op-Amp), U4 (ADC), U5 (ESP32), U6 (RS-485), U7 (Gate Driver), U8 (eFuse) |
+| **Subtotal** | **Electrical Components** | **70** | **Exact sum: 15 + 19 + 13 + 6 + 1 + 1 + 2 + 3 + 2 + 8 = 70** |
+| `H` | Mechanical Mounting Holes | 4 | H1–H4 (3.2 mm M3 drill features) |
+| **Total** | **Physical PCB Footprints** | **74** | **70 Electrical + 4 Mechanical = 74 Physical Features** |
+
+*Canonical Inventory & Hardware Manifest:* [eSim_Project/BOM/MISACS_CANONICAL_INVENTORY.md](eSim_Project/BOM/MISACS_CANONICAL_INVENTORY.md) and [eSim_Project/BOM/MISACS_CANONICAL_INVENTORY.json](eSim_Project/BOM/MISACS_CANONICAL_INVENTORY.json).
+
 *Full BOM files:* [eSim_Project/BOM/MISACS_BOM.csv](eSim_Project/BOM/MISACS_BOM.csv), [eSim_Project/BOM/MISACS_BOM.md](eSim_Project/BOM/MISACS_BOM.md), and [eSim_Project/BOM/MISACS_CANONICAL_INVENTORY.json](eSim_Project/BOM/MISACS_CANONICAL_INVENTORY.json).
 
 ---

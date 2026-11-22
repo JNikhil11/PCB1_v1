@@ -7,6 +7,24 @@
 - **Hardware Status:** Frozen & Verified Bit-Identical
 - **Total Electrical Components:** 70 (across 50 line items)
 - **Mechanical Mounting Elements:** 4 (3.2 mm Plated M3 Mounting Holes)
+- **Total Physical PCB Footprints:** 74 (70 Electrical + 4 Mechanical)
+
+### Summary Breakdown by Reference Prefix
+| Prefix | Category | Qty | Reference Designators |
+| :---: | :--- | :---: | :--- |
+| `C` | Capacitors | 15 | C1–C15 |
+| `R` | Resistors | 19 | R1–R19 |
+| `D` | Diodes & LEDs | 13 | D1–D12, D14 *(D13 skipped)* |
+| `J` | Screw Terminals | 6 | J1–J6 |
+| `JP` | Bus Termination Jumper | 1 | JP1 |
+| `L` | Power Inductor | 1 | L1 |
+| `Q` | Power MOSFETs | 2 | Q1, Q2 |
+| `F` | Fuses (1 PTC + 2 Fast) | 3 | F1 (PTC), F2 (Fast), F3 (Fast) |
+| `SW` | Tactile Switches | 2 | SW1 (RESET), SW2 (BOOT) |
+| `U` | ICs & Active Modules | 8 | U1 (Buck), U2 (LDO), U3 (Op-Amp), U4 (ADC), U5 (ESP32), U6 (RS-485), U7 (Gate Driver), U8 (eFuse) |
+| **Subtotal** | **Electrical Components** | **70** | **Exact sum: 15 + 19 + 13 + 6 + 1 + 1 + 2 + 3 + 2 + 8 = 70** |
+| `H` | Mechanical Mounting Holes | 4 | H1–H4 (3.2 mm M3 drill features) |
+| **Total** | **Physical PCB Footprints** | **74** | **70 Electrical + 4 Mechanical = 74 Physical Features** |
 
 | Item | Qty | Reference | Value | Description | Footprint | Manufacturer | MPN |
 | :---: | :---: | :--- | :--- | :--- | :--- | :--- | :--- |

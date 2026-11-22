@@ -56,7 +56,7 @@ KiCad 6.0.11 native Electrical Rules Check reports **0 Errors and 74 Warnings** 
 
 Every single warning has been analyzed and classified into one of three distinct categories:
 
-### Category 1: Embedded Symbol Modification Warnings (56 Warnings)
+### Category 1: Embedded Symbol Modification Warnings (58 Warnings)
 - **Warning Text:** `[lib_symbol_issues]: Symbol '<Item>' has been modified in library '<Lib>'.`
 - **Breakdown:**
   - Resistors (`Device:R`): 19 warnings (R1 to R19)
@@ -72,7 +72,7 @@ Every single warning has been analyzed and classified into one of three distinct
 - **Technical Explanation:** In KiCad 6, the schematic embeds full graphical and pin definitions in `(lib_symbols ...)`. When ERC runs, it compares the embedded cache against the system library file. Differences in default field order, description strings, or library timestamps trigger informational warnings to prevent accidental changes to placed symbols.
 - **Circuit Impact:** **Zero electrical impact.** All pins, numbers, and net connections are verified 100% correct.
 
-### Category 2: Library Configuration Mapping Warnings (15 Warnings)
+### Category 2: Library Configuration Mapping Warnings (13 Warnings)
 - **Warning Text:** `[lib_symbol_issues]: The current configuration does not include the library '<Lib>'.`
 - **Breakdown:**
   - `power`: 4 warnings (`#FLG01` to `#FLG04`)
