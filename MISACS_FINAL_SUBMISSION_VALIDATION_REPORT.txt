@@ -4,7 +4,6 @@ MISACS — FINAL SUBMISSION PACKAGE VALIDATION & INTEGRITY REPORT
 Project:    Modular Industrial Sensor Acquisition and Control System (MISACS)
 Program:    FOSSEE eSim Winter Internship 2026 — Screening Task 7: PCB Design using eSim
 Lead Eng:   Nikhil J
-Mentors:    Eyantra698Sumanto, OfficialVarad
 Date:       November 22, 2026
 EDA Engine: KiCad 6.0.11 (eSim 2.5 EDA Engine) + Ngspice 35 (nghdl-simulator)
 Platform:   Microsoft Windows 11 Enterprise (64-bit)

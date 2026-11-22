@@ -3,6 +3,7 @@
   (lib (name "Connector")(type "KiCad")(uri "${KICAD6_SYMBOL_DIR}/Connector.kicad_sym")(options "")(descr "Generic connectors"))
   (lib (name "Amplifier_Operational")(type "KiCad")(uri "${KICAD6_SYMBOL_DIR}/Amplifier_Operational.kicad_sym")(options "")(descr "Operational Amplifiers"))
   (lib (name "Analog_ADC")(type "KiCad")(uri "${KICAD6_SYMBOL_DIR}/Analog_ADC.kicad_sym")(options "")(descr "Analog to Digital Converters"))
+  (lib (name "Button_Switch_SMD")(type "KiCad")(uri "${KICAD6_SYMBOL_DIR}/Switch.kicad_sym")(options "")(descr "Switches"))
   (lib (name "Diode")(type "KiCad")(uri "${KICAD6_SYMBOL_DIR}/Diode.kicad_sym")(options "")(descr "Diodes"))
   (lib (name "Driver_FET")(type "KiCad")(uri "${KICAD6_SYMBOL_DIR}/Driver_FET.kicad_sym")(options "")(descr "FET Drivers"))
   (lib (name "Interface_UART")(type "KiCad")(uri "${KICAD6_SYMBOL_DIR}/Interface_UART.kicad_sym")(options "")(descr "UART Interfaces"))

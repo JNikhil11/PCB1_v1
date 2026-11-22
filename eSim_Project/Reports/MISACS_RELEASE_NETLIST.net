@@ -11,7 +11,7 @@
         (date "2026-11-15")
         (source "MISACS_ERC_Final_Verified.kicad_sch")
         (comment (number "1") (value "Lead Engineer: Nikhil J"))
-        (comment (number "2") (value "Mentors: Eyantra698Sumanto, OfficialVarad"))
+        (comment (number "2") (value "Independent GitHub Reviewers (Screening Audit): Eyantra698Sumanto, OfficialVarad"))
         (comment (number "3") (value "Production Master Baseline: Electrically Connected Schematic, 100% Routed PCB"))
         (comment (number "4") (value ""))
         (comment (number "5") (value ""))

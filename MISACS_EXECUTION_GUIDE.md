@@ -3,7 +3,7 @@
 **Project:** Modular Industrial Sensor Acquisition and Control System (MISACS)  
 **Program:** FOSSEE eSim Winter Internship 2026 — Screening Task 7: PCB Design using eSim  
 **Author / Intern:** Nikhil J (Lead Engineer)
-**Mentors:** Eyantra698Sumanto, OfficialVarad  
+  
 **EDA Software:** eSim 2.5 (FOSSEE, IIT Bombay) + KiCad 6.0.11 + Ngspice (nghdl-simulator)  
 **OS Platform:** Microsoft Windows 10 / 11 (64-bit)  
 **Submission Package:** `MISACS_FOSSEE_Winter_2026_Task7_Submission_Package_VisualEvidence_Revision2.zip`  
@@ -82,7 +82,7 @@ Get-FileHash 'eSim_Project\MISACS.kicad_pcb' -Algorithm SHA256
    - **Subsystem 7:** Processing Core (Espressif ESP32-WROOM-32E-N16, EN reset RC network, IO0 boot switch).
    - **Subsystem 8:** RS-485 Differential Interface (Maxim MAX3485EESA half-duplex transceiver, 120 Ohm termination DIP switch, pull-up/pull-down failsafe bias network).
    - **Subsystem 9:** High-Current Actuator Gate Drivers (TI UCC27524 high-speed dual low-side driver with independent gate resistors).
-   - **Subsystem 10:** Dual Low-Side Actuator MOSFETs (Nexperia PSMN022-30PL 30V 30A N-channel MOSFETs, SS36 inductive flyback clamp diodes).
+   - **Subsystem 10:** Dual Low-Side Actuator MOSFETs (Infineon IPD50N06S4L-08 60V 50A 8.4mΩ N-channel MOSFETs, SS36 inductive flyback clamp diodes).
 4. **Intentional No-Connect (NC) Verification:**  
    Confirm that all 4 intentional NC endpoints carry KiCad No-Connect flags:
    - ESP32 Pin 14 (`IO12 / MTDI`): Left unconnected to guarantee standard 3.3V flash boot voltage.

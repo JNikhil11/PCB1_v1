@@ -44,8 +44,8 @@ graph TD
         U5 -- "PWM CH1 (IO13)" --> U7["U7: UCC27524<br/>Dual Gate Driver (5V)"]
         U5 -- "PWM CH2 (IO16)" --> U7
         
-        U7 -- "Gate 1 (10R)" --> Q1["Q1: PSMN022-30PL<br/>NMOS Low-Side"]
-        U7 -- "Gate 2 (10R)" --> Q2["Q2: PSMN022-30PL<br/>NMOS Low-Side"]
+        U7 -- "Gate 1 (10R)" --> Q1["Q1: IPD50N06S4L-08<br/>NMOS Low-Side"]
+        U7 -- "Gate 2 (10R)" --> Q2["Q2: IPD50N06S4L-08<br/>NMOS Low-Side"]
         
         F2 --> J5["J5: OUT1 (+24V)"]
         Q1 --> J5

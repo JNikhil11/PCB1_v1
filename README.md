@@ -2,28 +2,28 @@
 
 [![EDA Toolchain](https://img.shields.io/badge/EDA-eSim%202.5%20%7C%20KiCad%206.0.11-blue.svg)](https://esim.fossee.in/)
 [![Simulation Engine](https://img.shields.io/badge/Simulation-Ngspice%2035-brightgreen.svg)](http://ngspice.sourceforge.net/)
-[![DRC Status](https://img.shields.io/badge/KiCad%20DRC-0%20Violations%20%7C%200%20Unconnected-success.svg)](#design-rule-check-drc--electrical-rule-check-erc)
-[![ERC Status](https://img.shields.io/badge/KiCad%20ERC-0%20Errors%20%7C%2074%20Lib%20Warnings-success.svg)](#design-rule-check-drc--electrical-rule-check-erc)
-[![License](https://img.shields.io/badge/License-CERN%20OHL--P%20v2%20%2F%20GPL--3.0-orange.svg)](#license)
+[![DRC Status](https://img.shields.io/badge/KiCad%20DRC-0%20Violations%20%7C%200%20Unconnected-success.svg)](#7-design-rule-check-drc--electrical-rule-check-erc)
+[![ERC Status](https://img.shields.io/badge/KiCad%20ERC-0%20Errors%20%7C%2074%20Lib%20Warnings-success.svg)](#7-design-rule-check-drc--electrical-rule-check-erc)
+[![Hardware License](https://img.shields.io/badge/License-CERN%20OHL--P%20v2-orange.svg)](#12-license)
 
 **Project:** Modular Industrial Sensor Acquisition and Control System (MISACS)  
 **Program:** FOSSEE eSim Winter Internship 2026 — Screening Task 7: PCB Design using eSim  
 **Author / Lead Engineer:** [Nikhil J](https://github.com/JNikhil11)  
-**Mentors:** Eyantra698Sumanto, OfficialVarad  
 **Repository:** [https://github.com/JNikhil11/PCB1_v1](https://github.com/JNikhil11/PCB1_v1)  
 
 ---
 
-## 1. Project Overview & Objectives
+## 1. Project Overview & Architecture
 
-The **Modular Industrial Sensor Acquisition and Control System (MISACS)** is a high-reliability, mixed-signal edge controller designed for harsh industrial telemetry, factory automation, and distributed process control. Operating from an unregulated industrial **+24 V DC** bus (+18 V to +36 V DC operational range), MISACS provides robust, isolated analog and digital sensor acquisition paired with high-current low-side actuator driving and isolated fieldbus communication.
+The **Modular Industrial Sensor Acquisition and Control System (MISACS)** is a high-density, mixed-signal edge controller designed for harsh industrial telemetry, factory automation, and process control. Operating from an unregulated industrial **+24 V DC** bus (+18 V to +36 V DC operational range), MISACS provides multi-channel analog sensor acquisition, high-current low-side actuator driving, on-board 32-bit dual-core compute (ESP32), and protected RS-485 serial fieldbus communication on a compact two-layer PCB.
 
 ### Core Engineering Objectives
-- **Industrial Voltage Compatibility:** Native operation from +24 V DC industrial supplies with reverse-polarity shunt protection, overvoltage transient suppression, and multi-rail sub-regulation.
-- **Mixed-Signal Domain Segregation:** Total galvanic isolation between field-facing power/I/O domains and sensitive digital/analog microcontroller logic.
-- **Precision Analog Instrumentation:** Simultaneous acquisition of 4–20 mA industrial current-loop signals and 0–10 V process control voltages with high-precision delta-sigma digitization.
-- **Robust Field Interfacing:** Optoisolated 24 V digital inputs, protected dual 5 A low-side PWM actuator outputs, and isolated RS-485 differential serial telemetry.
-- **Comprehensive DFM Compliance:** Strict adherence to two-layer PCB manufacturing constraints (100 mm × 80 mm outline, solid unbroken ground plane, zero DRC violations).
+- **Industrial Voltage Ingress:** Native operation from an unregulated +24 V DC supply with reverse-polarity shunt protection (D14), overvoltage transient clamping (D1), resettable PTC logic protection (F1), and independent fast-acting actuator fusing (F2, F3).
+- **Multi-Rail Power Management:** High-efficiency step-down buck conversion (LM2576HVS-5.0, U1) providing +5.0 V DC @ up to 3.0 A, cascaded into an AMS1117-3.3 linear LDO (U2) for a low-noise +3.3 V DC analog and digital logic rail.
+- **Precision Analog Instrumentation:** Simultaneous acquisition of industrial 4–20 mA current loops (protected by TPS26610 eFuse, U8) and 0–10 V process control voltages (precision 4:1 divider, clamped by BAT54S, D5), buffered via an LMV358 dual op-amp (U3) into an ADS1115 16-bit ΔΣ ADC (U4).
+- **High-Current Actuator Drives:** Dual low-side actuator channels driven by a dedicated UCC27524D high-speed 5 A dual gate driver (U7) switching Infineon `IPD50N06S4L-08` 60 V 50 A 8.4 mΩ N-channel power MOSFETs (Q1, Q2) with Vishay SS56 inductive flyback clamping diodes (D8, D10).
+- **Differential Fieldbus Telemetry:** Non-isolated half-duplex RS-485 serial bus interface based on the MAX3485EESA transceiver (U6) with SM712 asymmetrical TVS surge protection (D7) and switchable 120 Ω bus termination (JP1).
+- **Design for Manufacturing (DFM):** Strict compliance with standard 2-layer PCB fabrication constraints (100 mm × 80 mm outline, solid unbroken ground plane on B.Cu, zero DRC clearance violations, and zero unconnected nets).
 
 ---
 
@@ -38,105 +38,130 @@ The **Modular Industrial Sensor Acquisition and Control System (MISACS)** is a h
 | Top Orthographic View | Bottom Ground Plane View |
 | :---: | :---: |
 | <img src="Evidence/Submission_Screenshots/10_3d_viewer_top.png" width="420" alt="Top View"> | <img src="Evidence/Submission_Screenshots/11_3d_viewer_bottom.png" width="420" alt="Bottom View"> |
-| *Figure 2: Component Placement & Symmetry* | *Figure 3: Unbroken Ground Copper Plane* |
+| *Figure 2: Component Placement & Layout Symmetry* | *Figure 3: Unbroken Bottom Ground Copper Pour* |
 
 ---
 
 ## 3. System Architecture & 10 Functional Subsystems
 
-MISACS integrates **10 modular electrical subsystems** partitioned into distinct functional zones:
+MISACS integrates **10 verified electrical subsystems** partitioned into dedicated layout corridors:
 
 ```mermaid
 flowchart TD
-    subgraph Power_Domain["Power Distribution & Conditioning"]
-        J1["+24V Main Power Entry (J1)"] --> D14["Reverse-Polarity Shunt Diode (D14)"]
+    subgraph Power_Domain["Power Conditioning & Distribution"]
+        J1["+24V Main Power Entry (J1)"] --> D14["Reverse Shunt Diode (D14: SS56)"]
+        J1 --> D1["30V TVS Clamp (D1: SMBJ30A)"]
         J1 --> F1["PTC Logic Fuse 1.1A (F1)"]
-        J1 --> F2["Actuator Fuse Ch1 2.0A (F2)"]
-        J1 --> F3["Actuator Fuse Ch2 2.0A (F3)"]
-        F1 --> Buck["LM2576-5.0 Buck Regulator (+5V)"]
-        Buck --> LDO["AMS1117-3.3 Linear Regulator (+3.3V)"]
+        J1 --> F2["Actuator Fuse Ch1 5A (F2)"]
+        J1 --> F3["Actuator Fuse Ch2 5A (F3)"]
+        F1 --> D2["Reverse Blocking Diode (D2: SS36)"]
+        D2 --> Buck["LM2576HVS-5.0 Buck Regulator (U1)"]
+        Buck --> LDO["AMS1117-3.3 Linear Regulator (U2)"]
     end
 
-    subgraph Sensor_Domain["Analog Sensor Acquisition"]
-        J2["4–20 mA Current Loop (J2)"] --> TPS["TPS26610 eFuse + Sense (U7)"]
-        J3["0–10 V Input Channel (J3)"] --> AFE["TLV272 Dual Op-Amp Buffer / Scaler (U6)"]
-        TPS --> ADC["ADS1115 16-Bit ΔΣ ADC (U5)"]
-        AFE --> ADC
-        ADC -->|I2C Bus| MCU_Header["Microcontroller Header (J6)"]
+    subgraph Sensor_Domain["Analog Sensor Conditioning"]
+        J2["4–20 mA Current Loop (J2)"] --> TPS["TPS26610 Active eFuse (U8)"]
+        TPS --> R2["100Ω 0.1% Shunt (R2)"]
+        J3["0–10 V Input Channel (J3)"] --> Div["30k/10k Precision Divider (R4, R5)"]
+        Div --> Clamp["BAT54S Rail Clamp (D5)"]
+        R2 --> OpAmpA["LMV358 Buffer Ch A (U3)"]
+        Clamp --> OpAmpB["LMV358 Buffer Ch B (U3)"]
+        OpAmpA --> ADC["ADS1115 16-Bit ΔΣ ADC (U4)"]
+        OpAmpB --> ADC
     end
 
-    subgraph Actuator_Domain["Actuator Control"]
-        MCU_Header -->|PWM / GPIO| OptoDrv["PC817 Optocouplers (U1, U2)"]
-        OptoDrv --> GateDrv["TC4427 Gate Drivers"]
-        GateDrv --> PowerFET["AOD4184A N-Channel MOSFETs (Q1, Q2)"]
-        F2 --> ActOut1["Actuator Output Ch1 (J4)"]
-        F3 --> ActOut2["Actuator Output Ch2 (J4)"]
-        PowerFET --> ActOut1
-        PowerFET --> ActOut2
-        Flyback["SS56 Clamp Diodes (D8, D10)"] --- PowerFET
+    subgraph Compute_Core["Microcontroller & Compute"]
+        ADC -->|I2C Bus| ESP["ESP32-WROOM-32 MCU Module (U5)"]
+        SW1["Reset Button (SW1)"] --> ESP
+        SW2["Boot Button (SW2)"] --> ESP
+        ESP --> LED_Diag["Status & Power LEDs (D3, D6)"]
     end
 
-    subgraph Digital_IO["Industrial Digital I/O & Comm"]
-        DigIn["Optoisolated 24V Inputs (U3, U4)"] --> MCU_Header
-        MCU_Header --> RS485["MAX13487EESA Auto-Direction RS-485 (U8)"]
-        RS485 --> Fieldbus["RS-485 Fieldbus Header (J5)"]
+    subgraph Actuator_Domain["Dual High-Current Actuators"]
+        ESP -->|PWM Channels| GateDrv["UCC27524D Dual 5A Gate Driver (U7)"]
+        GateDrv --> Q1["IPD50N06S4L-08 MOSFET (Q1)"]
+        GateDrv --> Q2["IPD50N06S4L-08 MOSFET (Q2)"]
+        F2 --> Out1["Actuator Ch1 Load (J5)"]
+        F3 --> Out2["Actuator Ch2 Load (J6)"]
+        Q1 --> Out1
+        Q2 --> Out2
+        Flyback1["SS56 Clamp (D8)"] --- Out1
+        Flyback2["SS56 Clamp (D10)"] --- Out2
+    end
+
+    subgraph Fieldbus_Comm["Industrial Fieldbus Communication"]
+        ESP -->|TX, RX, DE| RS485["MAX3485EESA RS-485 Transceiver (U6)"]
+        RS485 --> J4["RS-485 Bus Terminal A, B, GND (J4)"]
+        JP1["Termination Jumper 120Ω (JP1, R11)"] --- J4
+        TVS_Bus["SM712 Asymmetrical TVS (D7)"] --- J4
     end
 ```
 
-### Subsystem Technical Summary
+### Detailed Subsystem Technical Specifications
 
-1. **Primary Power Protection & Entry:**
-   - **Connector:** J1 2-pin 5.08 mm screw terminal.
-   - **Protection:** Vishay `SS56-E3/57T` 60 V / 5 A Schottky shunt diode (D14) across power entry; Bourns `MF-MSMF110/33X-2` 1.1 A hold / 2.2 A trip resettable PTC fuse (F1) on downstream logic rail; independent 2.0 A cartridge fuses (F2, F3) on actuator supply rails; bulk filtering via low-ESR electrolytic capacitors (C1, C2).
-2. **High-Efficiency Step-Down Buck Converter:**
-   - **Topology:** Non-synchronous switching buck regulator based on TI `LM2576-5.0` (TO-263-5).
-   - **Magnetics & Freewheeling:** 100 µH high-current inductor (L1, 3.0 A saturation) paired with Vishay `SS56-E3/57T` fast Schottky catch diode (D12).
-   - **Output:** +5.0 V DC @ up to 3.0 A for optocouplers, operational amplifiers, and secondary regulation.
-3. **Precision Low-Dropout Linear Regulator:**
-   - **Topology:** AMS1117-3.3 SOT-223 LDO stepping down +5.0 V to +3.3 V DC logic supply for ADC, microcontroller logic, and digital I/O.
-   - **Filtering:** High-frequency decoupling with multi-layer ceramic capacitors (C13, C14).
+1. **Primary 24V Power Input & Ingress Protection:**
+   - **Terminal:** J1 (Phoenix Contact MKDS 1,5/2-5.08 screw terminal).
+   - **Ingress Clamping:** Vishay `SS56-E3/57T` (D14) 60 V 5 A Schottky diode in reverse-shunt across J1; Littelfuse `SMBJ30A` (D1) 600 W unidirectional TVS diode clamping overvoltage transients at 48.4 V.
+   - **Subsystem Fusing:** Bourns `MF-MSMF110/33X-2` (F1) 1.1 A hold / 2.2 A trip resettable PTC fuse on the logic supply branch; Vishay `SS36-E3/57T` (D2) series Schottky reverse-blocking diode protecting downstream regulators; Littelfuse `0451005.MRL` (F2, F3) 5.0 A fast-acting surface-mount fuses (2410 SMD) protecting actuator channels 1 and 2.
+   - **Bulk Filtering:** Panasonic `EEE-FK1H101P` (C1) 100 µF 50 V low-ESR electrolytic capacitor paired with KEMET 10 µF 50 V X7R ceramic capacitor (C2).
+2. **High-Efficiency Step-Down Buck Converter (24V -> 5V):**
+   - **Regulator:** Texas Instruments `LM2576HVS-5.0` (U1, TO-263-5) high-voltage switching regulator operating at 52 kHz.
+   - **Catch Diode & Magnetics:** Vishay `SS56-E3/57T` (D12) fast freewheeling catch diode paired with Bourns `SRR1260-101M` (L1) 100 µH shielded power inductor (1.70 A saturation, 180 mΩ max DCR).
+   - **Output Reservoir:** Panasonic `EEE-FK1C221P` (C14) 220 µF 16 V low-ESR electrolytic capacitor + Murata 10 µF 16 V ceramic bypass capacitor (C3).
+3. **Low-Dropout Linear Logic Regulator (5V -> 3.3V):**
+   - **Regulator:** Advanced Monolithic Systems `AMS1117-3.3` (U2, SOT-223-3) providing low-noise +3.3 V DC power for ADC, op-amps, and ESP32.
+   - **Decoupling Network:** Input capacitor Murata 10 µF 16 V (C4); output bulk capacitor KEMET 10 µF (C10); distributed 100 nF ceramic decoupling capacitors (C11, C13, C15).
 4. **Protected 4–20 mA Current-Loop Receiver:**
-   - **Active eFuse:** TI `TPS26610` (VSON-10) current-loop protector providing input current limiting, reverse-polarity blocking, and transient protection.
-   - **Conversion:** Precision 0.1% shunt resistor network translating 4–20 mA loop current into calibrated analog voltages.
+   - **Active Protector:** Texas Instruments `TPS26610DDF` (U8, SOT-23-8) current-loop protector providing 30 mA active current limiting and reverse-current blocking.
+   - **Precision Shunt:** Susumu `RR1220P-101-D` (R2) 100.0 Ω 0.1% 25 ppm precision thin-film resistor translating 4–20 mA current loops into 0.4 V to 2.0 V signals.
+   - **Secondary Clamping:** Littelfuse `SMAJ3.3A` (D4) 3.3 V 400 W TVS diode + KEMET 100 nF RC filter capacitor (C5).
 5. **0–10 V Precision Analog Conditioning:**
-   - **Instrumentation Op-Amp:** TI `TLV272` rail-to-rail input/output dual operational amplifier in SOIC-8.
-   - **Scaling & Clamping:** Precision resistor divider network scaling 0–10 V inputs to 0–3.3 V ADC range, clamped via dual Schottky diodes (D2, D3) against out-of-range industrial spikes.
-6. **High-Resolution Delta-Sigma ADC:**
-   - **Converter:** TI `ADS1115` 16-bit ΔΣ ADC (VSSOP-10) with integrated low-drift programmable reference, low-noise PGA, and I2C digital interface.
-   - **Resolution:** Up to 860 samples/sec with 16-bit effective resolution across both analog channels.
-7. **High-Current Dual Low-Side MOSFET Actuators:**
-   - **Power Switches:** Alpha & Omega `AOD4184A` 40 V / 50 A N-channel MOSFETs in TO-252 (DPAK), $R_{DS(on)} < 8.5\text{ m}\Omega$.
-   - **Drive & Clamping:** Optically isolated gate drive (PC817 U1, U2); inductive energy clamp diodes Vishay `SS56-E3/57T` (D8, D10) safely suppressing flyback surges from solenoid valves and contactors.
-8. **Optoisolated Industrial Digital Inputs:**
-   - **Isolators:** Everlight `EL817` / Sharp `PC817` photocouplers with 5.0 kV RMS isolation.
-   - **Interfacing:** Accepts 24 V logic levels via current-limiting resistors and reverse-voltage blocking diodes (D4, D5).
-9. **Isolated RS-485 Differential Fieldbus:**
-   - **Transceiver:** Maxim `MAX13487EESA` half-duplex RS-485 transceiver with proprietary AutoDirection control (eliminating dedicated RTS/DE direction control pins).
-   - **Termination & Protection:** On-board 120 Ω bus termination jumper and TVS clamp array.
-10. **System Diagnostics & Status Monitoring:**
-    - High-efficiency SMD diagnostic LEDs indicating +24V Raw Power (LED1), +5V Logic (LED2), +3.3V Analog (LED3), and Actuator State (LED4); on-board hardware reset switch (SW1).
+   - **Precision Attenuator:** Panasonic `ERA-6AEB303V` (R4, 30.0 kΩ 0.1%) and `ERA-6AEB103V` (R5, 10.0 kΩ 0.1%) creating a calibrated 4:1 voltage divider (0–10 V input scales to 0–2.5 V).
+   - **Overvoltage Clamping:** Diodes Inc. `BAT54S` (D5, SOT-23) dual Schottky rail clamp routing excess positive/negative fault transients safely to +3.3 V and GND rails.
+   - **Filtering:** KEMET 100 nF 50 V ceramic filter capacitor (C6).
+6. **Precision Operational Amplifier Buffer:**
+   - **Buffer:** Texas Instruments `LMV358IDR` (U3, SOIC-8) dual rail-to-rail output operational amplifier configured as unity-gain voltage followers for both 4–20 mA and 0–10 V channels.
+   - **Bypass:** KEMET 100 nF ceramic decoupling capacitor (C7).
+7. **High-Resolution 16-Bit Delta-Sigma ADC:**
+   - **Converter:** Texas Instruments `ADS1115IDGSR` (U4, MSOP-10) 16-bit ΔΣ ADC with integrated low-drift reference and programmable gain amplifier (PGA).
+   - **Digital Bus:** I2C interface (address 0x48) with 4.7 kΩ pull-up resistors (R6, R7) to +3.3 V; KEMET 100 nF bypass capacitor (C8).
+8. **On-Board Microcontroller Core (ESP32-WROOM-32):**
+   - **Processor:** Espressif Systems `ESP32-WROOM-32E-N16` (U5) dual-core Xtensa 32-bit LX6 running at up to 240 MHz with 16 MB integrated SPI flash and on-board PCB trace antenna.
+   - **Hardware Control:** C&K `PTS645` tactile switches for Hardware Reset (SW1) and Bootloader Entry (SW2) with 10 kΩ pull-ups (R8, R9) and 100 nF timing capacitor (C12).
+   - **Indicators:** +3.3 V Power Green LED (D3) with 1 kΩ ballast (R1); Blue Diagnostic Status LED (D6) with 1 kΩ ballast (R10) driven by ESP32 GPIO.
+9. **Dual High-Current Low-Side Power MOSFET Actuator Drivers:**
+   - **Gate Driver:** Texas Instruments `UCC27524D` (U7, SOIC-8) dual 5 A high-speed low-side driver driven directly by ESP32 PWM outputs (non-isolated).
+   - **Power Switches:** Infineon OptiMOS-T2 `IPD50N06S4L-08` (Q1, Q2) 60 V 50 A 8.4 mΩ N-channel power MOSFETs in TO-252 (DPAK).
+   - **Gate Networks:** 10 Ω series damping resistors (R14, R17) preventing high-frequency ringing; 10 kΩ gate-to-source pull-down resistors (R15, R18) preventing floating gate states during reset.
+   - **Inductive Energy Clamps:** Vishay `SS56-E3/57T` (D8, D10) 60 V 5 A Schottky diodes safely recirculating inductive flyback currents from inductive loads (solenoids, relays, contactors).
+   - **Output Terminals:** J5, J6 (Phoenix Contact MKDS 1,5/2-5.08 screw terminals); Yellow Channel Active LEDs (D9, D11) with 2.2 kΩ ballast resistors (R16, R19).
+10. **Industrial Half-Duplex RS-485 Serial Fieldbus (Non-Isolated):**
+    - **Transceiver:** Analog Devices / Maxim `MAX3485EESA+` (U6, SOIC-8) 3.3 V half-duplex RS-485/RS-422 transceiver. Controlled via DI, RO, and DE pins from ESP32.
+    - **Bus Terminal:** J4 (Phoenix Contact MKDS 1,5/3-5.08 3-pin screw terminal: Pin 1=A, Pin 2=B, Pin 3=GND).
+    - **Fail-Safe & Termination:** Wurth 2-pin 2.54 mm jumper header (JP1) engaging Yageo 120 Ω 1% termination resistor (R11); 390 Ω 0.1% pull-up (R12) and pull-down (R13) fail-safe bias network.
+    - **Surge Protection:** Littelfuse `SM712-02HTG` (D7, SOT-23) asymmetrical bidirectional TVS diode array (+12 V / -7 V) protecting bus lines against ESD and industrial switching surges.
+    - *Note:* The RS-485 transceiver shares common logic ground and is **non-isolated**.
 
 ---
 
-## 4. Schematic & PCB Layout
+## 4. Schematic & PCB Routing
 
-### Schematic Architecture (`MISACS.kicad_sch`)
-The electrical schematic is partitioned into 10 segregated subsystem blocks with explicit hierarchical net labels:
+### Master Schematic (`MISACS.kicad_sch`)
+The complete electrical schematic is partitioned into 10 segregated subsystem blocks with explicit net labels:
 
 <p align="center">
   <img src="Evidence/Submission_Screenshots/02_schematic_overview.png" alt="Schematic Overview" width="850">
   <br>
-  <em>Figure 4: Complete MISACS Schematic Overview displaying all 10 segregated functional subsystems</em>
+  <em>Figure 4: Complete MISACS Schematic Overview displaying all 10 functional subsystems</em>
 </p>
 
 <p align="center">
   <img src="Evidence/Submission_Screenshots/03_schematic_subsystems_detail.png" alt="Schematic Detail" width="850">
   <br>
-  <em>Figure 5: Detailed Zoom of the Precision AFE, TPS26610 eFuse, Regulators, and ADS1115 ADC</em>
+  <em>Figure 5: Detailed Zoom highlighting the LMV358 Buffer, TPS26610 eFuse, ADS1115 ADC, and Voltage Regulators</em>
 </p>
 
 ### PCB Physical Routing (`MISACS.kicad_pcb`)
-The PCB is engineered as a high-density, two-layer board with segregated analog, digital, and high-current power routing corridors:
 
 <p align="center">
   <img src="Evidence/Submission_Screenshots/07_pcb_complete_routing.png" alt="Complete PCB Routing" width="850">
@@ -147,22 +172,20 @@ The PCB is engineered as a high-density, two-layer board with segregated analog,
 | Top Copper Layer (F.Cu) | Bottom Ground Plane Layer (B.Cu) |
 | :---: | :---: |
 | <img src="Evidence/Submission_Screenshots/05_pcb_top_copper.png" width="420" alt="Top Copper"> | <img src="Evidence/Submission_Screenshots/06_pcb_bottom_copper.png" width="420" alt="Bottom Copper"> |
-| *Figure 7: Top Layer Power Polygons & Signal Traces* | *Figure 8: Solid Unbroken Ground Return Plane* |
+| *Figure 7: Top Layer High-Current Polygons & Signal Traces* | *Figure 8: Solid Unbroken Ground Return Copper Pour* |
 
-### PCB Manufacturing Specifications
-- **Dimensions:** 100.00 mm × 80.00 mm (Rectangular outline with 3.2 mm mounting holes on 4 mm corner setbacks).
+### PCB Fabrication Specifications
+- **Dimensions:** 100.00 mm × 80.00 mm (Rectangular outline with 3.2 mm plated mounting holes on 4.0 mm corner setbacks).
 - **Layer Count:** 2 Copper Layers (Top Layer F.Cu, Bottom Layer B.Cu).
-- **Base Material:** Standard FR4, 1.6 mm thickness, 1 oz/ft² (35 µm) copper weight.
-- **Minimum Trace Width:** 0.25 mm (signal) / 1.50 mm – 3.00 mm (power & actuator buses).
+- **Base Material:** Standard FR4, 1.6 mm finished board thickness, 1 oz/ft² (35 µm) copper weight.
+- **Minimum Trace Width:** 0.25 mm (signal) / 1.50 mm – 3.00 mm (power and actuator high-current polygons).
 - **Minimum Clearance:** 0.25 mm (10 mil).
 - **Via Geometry:** 0.60 mm pad diameter / 0.30 mm drill hole diameter.
-- **Ground Return:** 100% solid bottom ground pour (B.Cu) with perimeter ground stitching vias.
+- **Ground Return:** 100% solid bottom ground plane (B.Cu) with perimeter stitching vias.
 
 ---
 
 ## 5. EDA Toolchain & Provenance
-
-MISACS was developed and verified using official open-source EDA tooling:
 
 <p align="center">
   <img src="Evidence/Submission_Screenshots/01_esim_project_opened.png" alt="KiCad Project Manager" width="850">
@@ -171,30 +194,32 @@ MISACS was developed and verified using official open-source EDA tooling:
 </p>
 
 - **eSim Version:** FOSSEE eSim 2.5 (Windows 64-bit edition).
-- **Schematic & PCB Engine:** KiCad 6.0.11 (official signed EDA engine bundled with eSim 2.5).
-- **SPICE Simulator:** Ngspice 35 (distributed with eSim nghdl-simulator).
-- **File Compatibility:** Fully interoperable with standard KiCad 6.x / 7.x / 8.x and eSim 2.5 project loaders.
+- **EDA Engine:** KiCad 6.0.11 (official signed engine bundled with eSim 2.5).
+- **Simulation Engine:** Ngspice 35 (distributed with eSim nghdl-simulator).
+- **File Compatibility:** Interoperable with KiCad 6.x / 7.x / 8.x and eSim 2.5 project loaders.
 
 ---
 
 ## 6. Simulation & Verification Results
 
-The design includes **10 standalone Ngspice simulation testbenches** verified via an automated test runner (`Simulation/run_simulations.py`):
+The design includes **10 standalone Ngspice simulation testbenches** verified via an automated test runner (`eSim_Project/Simulation/run_simulations.py`):
 
-| Testbench | Subsystem Simulated | Analysis Mode | Verified Parameters | Qualification Status |
-| :---: | :--- | :---: | :--- | :---: |
-| **TB1** | 24V Input Reverse-Polarity & Overvoltage | Transient | D14 reverse clamping, TVS transient suppression, surge margin | **PASS** |
-| **TB2** | LM2576-5.0 Step-Down Buck DC-DC | Transient | Continuous conduction mode, 52 kHz switching, < 50 mV ripple | **PASS** |
-| **TB3** | AMS1117-3.3 Linear Regulator | DC Transfer | Dropout voltage ($V_{do} < 1.1\text{ V}$), DC load regulation | **NOT VERIFIED** *(Note 1)* |
-| **TB4** | TPS26610 4–20 mA Current Loop Receiver | DC Sweep | 4 mA to 20 mA linearity, 100 Ω shunt voltage calibration | **PASS** |
-| **TB5** | TLV272 0–10 V Analog Front-End Buffer | Transient / AC | Linear transfer gain, 0–3.3 V output scaling, input overvoltage clip | **PASS** |
-| **TB6** | AOD4184A Actuator Ch1 Gate Drive & Load | Transient | Switching times ($t_r, t_f < 200\text{ ns}$), D8 flyback clamp response | **PASS** |
-| **TB7** | AOD4184A Actuator Ch2 Gate Drive & Load | Transient | 5 A peak load switching, thermal power dissipation, flyback clamp | **PASS** |
-| **TB8** | Optoisolated Digital Input Channel | Transient | Optocoupler propagation delay (< 10 µs), 24 V logic threshold | **PASS** |
-| **TB9** | MAX13487 RS-485 Differential Transceiver | Transient | Differential voltage swing ($V_{OD} > 1.5\text{ V}$), 115.2 kbps signal integrity | **PASS** |
-| **TB10** | Integrated Power Tree & Trace Drops | Transient | Multi-rail DC distribution, PCB copper trace IR drops, ground bounce | **PASS** |
+| Testbench | Subsystem Simulated | Analysis Mode | Verified Parameters | Simulation Status | Qualification Status |
+| :---: | :--- | :---: | :--- | :---: | :---: |
+| **TB1** | 24V Input TVS Clamping & Reverse Protection | DC Sweep | Reverse blocking of D2, forward clamp of D14 shunt, SMBJ30A breakdown | **PASS** | **CONDITIONAL / NOT VERIFIED** *(Note 1)* |
+| **TB2** | LM2576-5.0 Buck Switching Power Stage | Transient | Continuous conduction mode, 52 kHz switching, 67.6 mVpp ripple | **PASS** | **PASS** |
+| **TB3** | AMS1117-3.3 Series Distributed Trace Network | DC Sweep | DC dropout voltage ($V_{do} < 1.1\text{ V}$), 5.14 mV series PCB trace drop | **PASS** | **NOT VERIFIED** *(Note 2)* |
+| **TB4** | 4–20 mA Current Loop Shunt & Buffer Linearity | DC Sweep | 4 mA to 20 mA linearity, 100 Ω shunt voltage calibration ($R^2 = 1.000$) | **PASS** | **PASS** |
+| **TB5** | 0–10 V Voltage Input Conditioning | DC Sweep | Exact 4.000:1 attenuation (0–2.5 V output), extended 12 V over-range clip | **PASS** | **PASS** |
+| **TB6** | ADS1115 Input Overvoltage Clamping | DC Sweep | BAT54S dual Schottky clamp routing negative (-5V) and positive (+10V) faults | **PASS** | **CONDITIONAL / NOT VERIFIED** *(Note 3)* |
+| **TB7** | IPD50N06S4L-08 Gate Drive Dynamic Switching | Transient | UCC27524 gate drive, switching speeds ($t_f = 12.5\text{ ns}, t_r = 9.9\text{ ns}$) | **PASS** | **PASS** |
+| **TB8** | Dual Resistive-Load Switching Simulation | Transient | Asynchronous 24V switching (CH1 4.0 A / 6.0 Ω, CH2 2.5 A / 9.6 Ω) | **PASS** | **PASS** |
+| **TB9** | Inductive Load Turn-off Flyback Clamping | Transient | 5.0 A inductive turn-off (10 mH), SS56 clamping peak $V_{drain} = 24.63\text{ V}$ | **PASS** | **PASS** |
+| **TB10** | RS-485 Differential Bus Signaling | Transient | Differential voltage swing ($2.10\text{ V}_{pp}$), 390 Ω bias, 60 Ω termination | **PASS** | **PASS** |
 
-> **Note 1 (AMS1117-3.3 Qualification):** TB3 validates DC dropout response and trace drop. As disclosed in the master engineering report, dynamic loop stability with multi-layer ceramic output capacitors (C13, C14) requires physical prototype load-transient bench testing to confirm phase margin.
+> **Note 1 (TB1 Qualification):** Verifies static DC protection under model assumptions; dynamic reverse-polarity fuse coordination under high-energy installation fault conditions remains unverified.  
+> **Note 2 (TB3 Qualification):** Verifies DC dropout and series trace drop. Dynamic loop stability with low-ESR ceramic capacitors (C4, C10) under pulsed ESP32 Wi-Fi loads requires physical prototype load-transient testing.  
+> **Note 3 (TB6 Qualification):** Generic room-temperature Schottky model. Worst-case sub-zero temperature derating and ADS1115 internal ESD diode interaction require physical bench testing.
 
 ---
 
@@ -210,43 +235,46 @@ The design includes **10 standalone Ngspice simulation testbenches** verified vi
 - **Unconnected Pads:** **0**
 - **Footprint Errors:** **0**
 - **ERC Electrical Errors:** **0**
-- **Informational Library Warnings:** 74 (All 74 warnings are standard `[lib_symbol_issues]` due to KiCad 6 embedded cache mapping; zero open pins, zero conflicting outputs, and zero floating nets).
-- **Netlist Parity:** 100% parity verified between schematic and PCB across all 196 physical pin endpoints (192 connected endpoints + 4 intentional no-connect flags) and 40 electrical nets.
+- **Informational Library Warnings:** 74 (All 74 warnings are standard `[lib_symbol_issues]` resulting from KiCad 6 design-rule check comparing embedded schematic symbol cache against system libraries; zero open pins, zero conflicting outputs, and zero floating nets).
+- **Netlist Parity:** 100% parity verified between schematic and PCB across all 196 physical pin endpoints (192 connected pin endpoints + 4 intentional no-connect flags) and 40 electrical nets.
 
 ---
 
 ## 8. Bill of Materials (BOM) Summary
 
-The MISACS bill of materials contains **70 physical electronic components** and **4 mechanical mounting holes** across 50 distinct line items:
+The MISACS bill of materials contains **70 physical electrical components** and **4 mechanical mounting holes** across 50 distinct line items:
 
 | Category | Count | Key Components |
 | :--- | :---: | :--- |
-| **Integrated Circuits** | 8 | LM2576-5.0 (U9), AMS1117-3.3 (U10), TPS26610 (U7), TLV272 (U6), ADS1115 (U5), MAX13487EESA (U8), PC817 (U1-U4) |
-| **Discrete Semiconductors** | 16 | AOD4184A N-Channel MOSFETs (Q1, Q2); SS56-E3/57T 60V/5A Schottky Diodes (D8, D10, D12, D14); 1N4148 / BAV99 Diodes (D1-D7, D9, D11, D13) |
-| **Passive Devices** | 46 | Precision 0.1% metal thin-film resistors, 100 µH 3A power inductor (L1), low-ESR electrolytic & ceramic MLCC capacitors |
-| **Protection Devices** | 3 | Bourns MF-MSMF110/33X-2 1.1A PTC (F1), 2.0A cartridge fuses (F2, F3) |
-| **Interconnect & Electromechanical** | 7 | 5.08 mm industrial screw terminals (J1-J4), 2.54 mm headers (J5, J6), tactile push switch (SW1) |
-| **Mechanical** | 4 | 3.2 mm plated mounting holes (H1-H4) |
+| **Integrated Circuits** | 8 | LM2576HVS-5.0 (U1), AMS1117-3.3 (U2), LMV358 (U3), ADS1115 (U4), ESP32-WROOM-32 (U5), MAX3485EESA (U6), UCC27524D (U7), TPS26610DDF (U8) |
+| **Power MOSFETs** | 2 | Infineon OptiMOS-T2 `IPD50N06S4L-08` 60 V 50 A 8.4 mΩ N-Channel in TO-252 / DPAK (Q1, Q2) |
+| **Diodes & Protection** | 13 | Vishay SS56 60V 5A Schottky (D8, D10, D12, D14); Vishay SS36 60V 3A Schottky (D2); Littelfuse SMBJ30A 30V TVS (D1); Littelfuse SMAJ3.3A TVS (D4); Diodes Inc. BAT54S Dual Schottky (D5); Littelfuse SM712 RS-485 TVS (D7); Green LED (D3); Blue LED (D6); Yellow LEDs (D9, D11) |
+| **Fuses** | 3 | Bourns MF-MSMF110/33X-2 1.1A PTC (F1); Littelfuse 0451005.MRL 5.0A Fast Fuse 2410 (F2, F3) |
+| **Passive Devices** | 35 | Precision 0.1% metal thin-film resistors (R2, R4, R5, R12, R13); standard 1% resistors (R1, R3, R6-R11, R14-R19); Bourns SRR1260 100 µH inductor (L1); Low-ESR electrolytic capacitors (C1, C14); X7R ceramic capacitors (C2-C13, C15) |
+| **Interconnect & Switches** | 9 | Phoenix Contact 5.08mm screw terminals (J1, J2, J3, J5, J6); 3-pin terminal (J4); 2.54mm jumper header (JP1); C&K PTS645 tactile push switches (SW1, SW2) |
+| **Mechanical** | 4 | 3.2 mm plated M3 chassis mounting holes (H1-H4) |
 
-*Full BOM files:* [eSim_Project/BOM/MISACS_BOM.csv](eSim_Project/BOM/MISACS_BOM.csv) and [eSim_Project/BOM/MISACS_BOM.md](eSim_Project/BOM/MISACS_BOM.md).
+*Full BOM files:* [eSim_Project/BOM/MISACS_BOM.csv](eSim_Project/BOM/MISACS_BOM.csv), [eSim_Project/BOM/MISACS_BOM.md](eSim_Project/BOM/MISACS_BOM.md), and [eSim_Project/BOM/MISACS_CANONICAL_INVENTORY.json](eSim_Project/BOM/MISACS_CANONICAL_INVENTORY.json).
 
 ---
 
-## 9. Honest Technical Disclosures & Outstanding Limitations
+## 9. Honest Technical Disclosures & Qualification Boundaries
 
-In accordance with rigorous engineering qualification standards, all platform and hardware limitations are documented transparently:
+In strict adherence to engineering qualification ethics, all platform limitations and unverified claims are disclosed transparently:
 
 1. **Host eSim 2.5 GUI Launch (`NOT VERIFIED`):**
-   - On the primary Windows 11 Enterprise development workstation, the front-end launcher (`C:\FOSSEE\eSim\eSim.exe`) was blocked by Microsoft Windows Smart App Control (SAC) / Code Integrity Policy with `WinError 4551` (Event ID 3077).
-   - In adherence to strict competition rules, host operating system security policies were NOT bypassed or disabled.
-   - All EDA operations were executed using official, signed native KiCad 6.0.11 (the exact EDA engine bundled with eSim 2.5). Design files are 100% bit-compatible with eSim 2.5 on standard environments.
-2. **Standalone DRC Schematic Parity Engine (`NOT VERIFIED IN DRC`):**
-   - KiCad 6.0.11 Pcbnew running in standalone mode lacks inter-process shared memory linkage to Eeschema; the DRC dialog reports `Schematic Parity (not run)`.
-   - Independent 100% netlist parity (196 endpoints) is verified via pin-for-pin netlist extraction in `Verification/SCHEMATIC_PCB_NETLIST_PARITY_REPORT.txt`.
-3. **AMS1117-3.3 Dynamic Stability (`NOT VERIFIED`):**
-   - Ngspice TB3 validates DC dropout and distributed trace drop. True AC loop phase margin with low-ESR ceramic output capacitors (C13, C14) requires physical prototype load-transient testing.
+   - On the primary Windows 11 Enterprise development workstation, launching `C:\FOSSEE\eSim\eSim.exe` was intercepted and blocked by Microsoft Windows Smart App Control (SAC) / Code Integrity Policy with `WinError 4551` (Event ID 3077).
+   - In accordance with competition rules, host operating system security controls were NOT bypassed or disabled.
+   - All EDA engineering was performed using native, official KiCad 6.0.11 (the exact EDA engine bundled with eSim 2.5). The design files are 100% bit-compatible with eSim 2.5 on standard environments.
+2. **Standalone KiCad DRC Parity Engine (`NOT VERIFIED IN DRC` / `PASS VIA NETLIST AUDIT`):**
+   - Standalone Pcbnew lacks inter-process shared memory linkage to Eeschema; the DRC dialog reports `Schematic Parity (not run)`.
+   - Independent 100% netlist parity (196 endpoints) is verified and documented in `Verification/SCHEMATIC_PCB_NETLIST_PARITY_REPORT.txt`.
+3. **AMS1117-3.3 Dynamic Loop Stability (`NOT VERIFIED`):**
+   - Simulation TB3 validates DC dropout response and distributed trace drop. True AC loop phase margin with low-ESR ceramic capacitors (C4, C10) under dynamic Wi-Fi pulsed loads requires physical prototype load-transient testing.
 4. **D14 Dynamic Reverse-Polarity Fault Clearing (`NOT VERIFIED`):**
-   - Continuous thermal survival of Schottky diode D14 under reverse-polarity input fault requires an external upstream fast-acting fuse to clear before diode thermal dissipation limits are exceeded.
+   - Continuous thermal survival of Schottky diode D14 under reverse-polarity input fault requires an external upstream fast fuse to clear before diode thermal dissipation limits are exceeded.
+5. **No Physical Prototype Claim:**
+   - **No physical hardware prototype has been fabricated or bench-tested.** All verification results presented are derived strictly from native KiCad 6.0.11 DRC/ERC checks, netlist topological extraction, and Ngspice 35 numerical simulations.
 
 ---
 
@@ -255,18 +283,18 @@ In accordance with rigorous engineering qualification standards, all platform an
 ```text
 PCB1_v1/
 ├── README.md                                         # Master Project Documentation & Architecture
+├── .gitattributes                                    # Line-Ending & Binary File Attributes
 ├── .gitignore                                        # KiCad & Python Git Ignore Rules
-├── MISACS_EXECUTION_GUIDE.md                         # Detailed Toolchain Execution & Evaluator Guide
-├── MISACS_FINAL_SUBMISSION_VALIDATION_REPORT.txt      # Final Package Cryptographic & Integrity Audit
-├── MISACS_FOSSEE_TASK7_SUBMISSION_MANIFEST_SHA256.txt # 167-File SHA-256 Checksum Manifest
-├── PHASE3_CORRECTION_REPORT.md                       # Comprehensive Engineering Correction Log
+├── MISACS_EXECUTION_GUIDE.md                         # Reproduction & Evaluator Guide
+├── MISACS_FINAL_SUBMISSION_VALIDATION_REPORT.txt      # Cryptographic & Integrity Audit Report
+├── MISACS_FOSSEE_TASK7_SUBMISSION_MANIFEST_SHA256.txt # 167-File Master Checksum Manifest
 ├── Design_Proposal/
-│   ├── MISACS_DESIGN_PROPOSAL.md                     # Markdown Design Proposal & Architectural Spec
+│   ├── MISACS_DESIGN_PROPOSAL.md                     # Markdown Architectural Specification
 │   └── MISACS_FOSSEE_Task7_Design_Proposal.pdf       # Compiled 6-Page Design Proposal Document
 ├── PDF_Report/
 │   └── MISACS_FOSSEE_Task7_Engineering_Report.pdf    # Compiled 18-Page Engineering Qualification Report
 ├── Evidence/
-│   ├── SUBMISSION_SCREENSHOTS_CONTACT_SHEET.png      # 12-Panel High-Resolution Evidence Sheet
+│   ├── SUBMISSION_SCREENSHOTS_CONTACT_SHEET.png      # High-Resolution 12-Panel Evidence Sheet
 │   └── Submission_Screenshots/                       # 12 Distinct Native KiCad EDA Captures (PNG)
 │       ├── 01_esim_project_opened.png
 │       ├── 02_schematic_overview.png
@@ -285,12 +313,14 @@ PCB1_v1/
 │   ├── MISACS.kicad_pcb                              # Master PCB Layout (385,602 B | SHA-256: 136E71...)
 │   ├── MISACS.kicad_pro                              # KiCad Project File
 │   ├── MISACS.kicad_prl                              # KiCad Project Local Settings
-│   ├── MISACS.proj                                   # eSim 2.5 Project Descriptor
+│   ├── MISACS.proj                                   # eSim 2.5 Project Descriptor Anchor
 │   ├── sym-lib-table                                 # Symbol Library Mapping Table
 │   ├── fp-lib-table                                  # Footprint Library Mapping Table
 │   ├── BOM/
-│   │   ├── MISACS_BOM.csv                            # 50-Row Comma-Separated Bill of Materials
-│   │   └── MISACS_BOM.md                             # Formatted Markdown Bill of Materials
+│   │   ├── MISACS_BOM.csv                            # 50-Row Synchronized Bill of Materials
+│   │   ├── MISACS_BOM.md                             # Formatted Markdown Bill of Materials
+│   │   ├── MISACS_CANONICAL_INVENTORY.json           # Machine-Readable Component Inventory
+│   │   └── MISACS_CANONICAL_INVENTORY.md             # Canonical Hardware Inventory Document
 │   ├── Gerber/                                       # RS-274X Fabrication Gerbers & Drill Files
 │   │   ├── MISACS-F_Cu.gbr
 │   │   ├── MISACS-B_Cu.gbr
@@ -303,16 +333,15 @@ PCB1_v1/
 │   │   └── MISACS-PTH.drl
 │   └── Simulation/                                   # 10 Portable Ngspice Testbenches
 │       ├── run_simulations.py                        # Automated Python SPICE Simulation Runner
-│       └── TB1_Input_Protection/ ... TB10_Power_Tree/
-├── Verification/
-│   ├── ESIM_2.5_LAUNCH_AUDIT_REPORT.txt              # Windows Smart App Control Blocker Log
-│   ├── LIBRARY_AUDIT_REPORT.md                       # Symbol & Footprint Library Audit
-│   ├── MISACS_FRESH_NATIVE_DRC_REPORT.rpt            # KiCad 6.0.11 DRC Report (0 Violations)
-│   ├── MISACS_RELEASE_ERC.rpt                        # KiCad 6.0.11 ERC Report (0 Errors)
-│   ├── SCHEMATIC_PCB_NETLIST_PARITY_REPORT.txt       # 196-Endpoint Netlist Audit Report
-│   └── VISUAL_EVIDENCE_VALIDATION_REPORT.txt         # 12-Screenshot Provenance Report
-└── Instructions/
-    └── MISACS_EXECUTION_GUIDE.md                     # Step-by-Step Reproduction Guide
+│       ├── SIMULATION_REPORT.md                      # Comprehensive Simulation Report
+│       └── tb1_input_protection.cir ... tb10_rs485_bus.cir
+└── Verification/
+    ├── ESIM_2.5_LAUNCH_AUDIT_REPORT.txt              # Windows Smart App Control Log
+    ├── LIBRARY_AUDIT_REPORT.md                       # Symbol & Footprint Library Audit
+    ├── MISACS_FRESH_NATIVE_DRC_REPORT.rpt            # Native KiCad DRC Report (0 Violations)
+    ├── MISACS_RELEASE_ERC.rpt                        # Native KiCad ERC Report (0 Errors)
+    ├── SCHEMATIC_PCB_NETLIST_PARITY_REPORT.txt       # 196-Endpoint Netlist Audit Report
+    └── VISUAL_EVIDENCE_VALIDATION_REPORT.txt         # 12-Screenshot Provenance Report
 ```
 
 ---
